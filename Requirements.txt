@@ -1,0 +1,5 @@
+﻿Pip install pandas
+Import numpy as np
+Import pandas as pd
+Import matplotlib.pyplot as plt
+Import seaborn as sns
