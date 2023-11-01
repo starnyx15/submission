@@ -17,7 +17,7 @@ if selected_dataset == "day.csv":
     st.header("Day.csv Data Visualization")
     data = data_day
 else:
-    st.header("Hour.csv Data Visualization")
+    st.header("hour.csv Data Visualization")
     data = data_hour
 
 # Visualizations
