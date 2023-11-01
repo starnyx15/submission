@@ -1,65 +1,55 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
-# Load the "day.csv" and "hour.csv" datasets
-data_day = pd.read_csv("Bike-sharing-dataset/day.csv")
-data_hour = pd.read_csv("Bike-sharing-dataset/hour.csv")
+# Load the datasets
+day_df = pd.read_csv("day.csv")
+hour_df = pd.read_csv("hour.csv")
 
-# Create a Streamlit app
-st.title("Bike Rentals Data Visualization")
+# Streamlit app title and introduction
+st.title("Bike Sharing Dataset Visualization")
 
-# Sidebar to select dataset
-selected_dataset = st.sidebar.radio("Select Dataset", ("day.csv", "hour.csv"))
+st.write("This app allows you to visualize the Bike Sharing dataset.")
 
-if selected_dataset == "day.csv":
-    st.header("Day.csv Data Visualization")
-    data = data_day
+# Sidebar for dataset selection
+dataset_selection = st.sidebar.selectbox("Select Dataset", ("day.csv", "hour.csv"))
+
+# Display the selected dataset
+if dataset_selection == "day.csv":
+    st.header("Day Dataset")
+    st.write(day_df)
 else:
-    st.header("hour.csv Data Visualization")
-    data = data_hour
+    st.header("Hour Dataset")
+    st.write(hour_df)
 
-# Visualizations
-# Insight 1: Daily Bike Rentals Over Time
-st.subheader("Insight 1: Daily Bike Rentals Over Time")
-plt.figure(figsize=(12, 6))
-sns.lineplot(x="dteday", y="cnt", data=data, hue="hr" if selected_dataset == "hour.csv" else None)
-plt.title("Hourly Bike Rentals Over Time" if selected_dataset == "hour.csv" else "Daily Bike Rentals Over Time")
-plt.xlabel("Date")
-plt.ylabel("Total Rentals")
-plt.xticks(rotation=45)
-st.pyplot()
+# Data visualization options
+st.sidebar.markdown("## Data Visualization Options")
 
-# Insight 2: Impact of Weather on Bike Rentals
-st.subheader("Insight 2: Impact of Weather on Bike Rentals")
-plt.figure(figsize=(8, 6))
-sns.boxplot(x="weathersit", y="cnt", data=data)
-plt.title("Impact of Weather on Bike Rentals")
-plt.xlabel("Weather Situation")
-plt.ylabel("Total Rentals")
-st.pyplot()
+# Visualization type selection
+visualization_type = st.sidebar.selectbox(
+    "Select Visualization Type",
+    ("Line Chart", "Bar Chart", "Histogram"),
+)
 
-# Insight 3: Bike Rentals by Season
-st.subheader("Insight 3: Bike Rentals by Season")
-plt.figure(figsize=(8, 6))
-sns.boxplot(x="season", y="cnt", data=data)
-plt.title("Bike Rentals by Season")
-plt.xlabel("Season")
-plt.ylabel("Total Rentals")
-st.pyplot()
+# Visualize the selected dataset
+if dataset_selection == "day.csv":
+    st.subheader("Visualizations for Day Dataset")
 
-# Insight 4: Correlation Matrix Heatmap
-# Filter only numeric columns
-numeric_columns = data.select_dtypes(include=[float, int])
+    if visualization_type == "Line Chart":
+        st.line_chart(day_df)
+    elif visualization_type == "Bar Chart":
+        st.bar_chart(day_df)
+    elif visualization_type == "Histogram":
+        column = st.selectbox("Select Column for Histogram", day_df.columns)
+        st.bar_chart(day_df[column].value_counts())
 
-# Calculate the correlation matrix
-correlation_matrix = numeric_columns.corr()
+else:
+    st.subheader("Visualizations for Hour Dataset")
 
-# Visualize the correlation matrix
-st.subheader("Insight 4: Correlation Matrix Heatmap")
-plt.figure(figsize=(10, 8))
-sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm")
-plt.title("Correlation Matrix")
-st.pyplot()
-
+    if visualization_type == "Line Chart":
+        st.line_chart(hour_df)
+    elif visualization_type == "Bar Chart":
+        st.bar_chart(hour_df)
+    elif visualization_type == "Histogram":
+        column = st.selectbox("Select Column for Histogram", hour_df.columns)
+        st.bar_chart(hour_df[column].value_counts())
